@@ -6,13 +6,13 @@ use anchor_spl::token;
 use anchor_lang::event;
 use anchor_lang::emit;
 
-declare_id!("8fK3EArbLPuao6tZVAn6te9yJkxAHay2JcBcauk61cBN");
+declare_id!("BJ9h1uL5cnrZrbT73DNc4HQLhvxNyKpzpxMAYMGEXhmN");
 
 #[program]
-mod dojbridge {
+mod dojima {
     use super::*;
 
-    pub fn transfer_tokens(ctx: Context<TransferNonNative>, amount: u64) -> ProgramResult {
+    pub fn transfer_non_native_tokens(ctx: Context<TransferNonNative>, amount: u64) -> ProgramResult {
         let sender = &ctx.accounts.from;
         let sender_tokens = &ctx.accounts.from_token_account;
         let recipient_tokens = &ctx.accounts.to_token_account;
@@ -33,7 +33,7 @@ mod dojbridge {
         return Ok(());
     }
 
-    pub fn transfer_nat_tokens(ctx: Context<TransferNative>, dest_blockchain: String, amount: u64, asset: String) -> ProgramResult {
+    pub fn transfer_native_tokens(ctx: Context<TransferNative>, dest_blockchain: String, amount: u64, asset: String) -> ProgramResult {
         let ix = system_instruction::transfer(
             &ctx.accounts.from.key(),
             &ctx.accounts.to.key(),
@@ -80,10 +80,13 @@ pub struct TransferNonNative<'info> {
 #[instruction(amount: u64)]
 pub struct TransferNative<'info> {
     #[account(mut, signer)]
+    /// CHECK: This is not dangerous because it's passed to CPI which does necessary checks.
     pub from: AccountInfo<'info>,
     #[account(mut)]
+    /// CHECK: This is not dangerous because it's passed to CPI which does necessary checks.
     pub to: AccountInfo<'info>,
     #[account(address = system_program::ID)]
+    /// CHECK: This is not dangerous because it is the system program developed by Solana. 
     pub system_program: AccountInfo<'info>,
 }
 

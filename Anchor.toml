@@ -1,15 +1,14 @@
 [features]
 seeds = false
 [programs.localnet]
-dojbridge = "8fK3EArbLPuao6tZVAn6te9yJkxAHay2JcBcauk61cBN"
+dojima = "BJ9h1uL5cnrZrbT73DNc4HQLhvxNyKpzpxMAYMGEXhmN"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "devnet"
-wallet = "/Users/abhishek/.config/solana/id.json"
-dojbridge = "8fK3EArbLPuao6tZVAn6te9yJkxAHay2JcBcauk61cBN"
+cluster = "localnet"
+wallet = "/Users/dojima/.config/solana/id.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
