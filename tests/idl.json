@@ -1,0 +1,103 @@
+{
+  "version": "0.1.0",
+  "name": "dojima",
+  "instructions": [
+    {
+      "name": "transferNonNativeTokens",
+      "accounts": [
+        {
+          "name": "from",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "fromTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "toTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "transferNativeTokens",
+      "accounts": [
+        {
+          "name": "from",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "to",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "tokenAmount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "LockEvent",
+      "fields": [
+        {
+          "name": "sourceBlockchain",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "destBlockchain",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "sender",
+          "type": "publicKey",
+          "index": true
+        },
+        {
+          "name": "amount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "asset",
+          "type": "string",
+          "index": false
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "address": "4vhGdPhZcFSbGveMd5VqXwuz2fttxU6r7B9M7upiM3k7"
+  }
+}

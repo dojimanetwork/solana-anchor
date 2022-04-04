@@ -6,7 +6,7 @@ use anchor_spl::token;
 use anchor_lang::event;
 use anchor_lang::emit;
 
-declare_id!("BJ9h1uL5cnrZrbT73DNc4HQLhvxNyKpzpxMAYMGEXhmN");
+declare_id!("4vhGdPhZcFSbGveMd5VqXwuz2fttxU6r7B9M7upiM3k7");
 
 #[program]
 mod dojima {
@@ -33,11 +33,11 @@ mod dojima {
         return Ok(());
     }
 
-    pub fn transfer_native_tokens(ctx: Context<TransferNative>, dest_blockchain: String, amount: u64, asset: String) -> ProgramResult {
+    pub fn transfer_native_tokens(ctx: Context<TransferNative>, token_amount: u64) -> ProgramResult {
         let ix = system_instruction::transfer(
             &ctx.accounts.from.key(),
             &ctx.accounts.to.key(),
-            amount,
+            token_amount,
         );
         solana_program::program::invoke(
             &ix,
@@ -50,17 +50,16 @@ mod dojima {
 
         emit!(LockEvent {
            source_blockchain: "Solana".to_string(),
-           dest_blockchain: dest_blockchain,
+           dest_blockchain: "Ethereum".to_string(),//dest_blockchain,
            sender: ctx.accounts.from.key(),
-           amount: amount,
-           asset: asset,
+           amount: token_amount,
+           asset: "SOL".to_string(),
         });
 
         return Ok(());
     }
 
 }
-
 
 #[derive(Accounts)]
 #[instruction(amount: u64)]
@@ -74,7 +73,6 @@ pub struct TransferNonNative<'info> {
     pub mint: Account<'info, token::Mint>,
     pub token_program: Program<'info, token::Token>,
 }
-
 
 #[derive(Accounts)]
 #[instruction(amount: u64)]

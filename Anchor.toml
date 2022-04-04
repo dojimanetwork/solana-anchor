@@ -1,13 +1,15 @@
 [features]
 seeds = false
 [programs.localnet]
-dojima = "BJ9h1uL5cnrZrbT73DNc4HQLhvxNyKpzpxMAYMGEXhmN"
+dojima = "4vhGdPhZcFSbGveMd5VqXwuz2fttxU6r7B9M7upiM3k7"
+[programs.devnet]
+dojima = "4vhGdPhZcFSbGveMd5VqXwuz2fttxU6r7B9M7upiM3k7"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "/Users/dojima/.config/solana/id.json"
 
 [scripts]
