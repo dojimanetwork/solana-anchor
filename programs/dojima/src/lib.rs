@@ -15,6 +15,9 @@ mod dojima {
     pub fn transfer_non_native_tokens(
         ctx: Context<TransferNonNative>,
         token_amount: u64,
+        source_chain: String,
+        destination_chain: String,
+        token_locked: String,
     ) -> ProgramResult {
         let sender = &ctx.accounts.from;
         let sender_tokens = &ctx.accounts.from_token_account;
@@ -33,11 +36,11 @@ mod dojima {
         )?;
 
         emit!(LockEvent {
-            source_blockchain: "Solana".to_string(),
-            dest_blockchain: "Ethereum".to_string(), //dest_blockchain,
+            source_blockchain: source_chain,
+            destination_blockchain: destination_chain, //dest_blockchain,
             sender: ctx.accounts.from.key(),
             amount: token_amount,
-            asset: "SOL".to_string(),
+            asset: token_locked,
         });
         return Ok(());
     }
@@ -45,6 +48,9 @@ mod dojima {
     pub fn transfer_native_tokens(
         ctx: Context<TransferNative>,
         token_amount: u64,
+        source_chain: String,
+        destination_chain: String,
+        token_locked: String,
     ) -> ProgramResult {
         let ix = system_instruction::transfer(
             &ctx.accounts.from.key(),
@@ -61,11 +67,11 @@ mod dojima {
         )?;
 
         emit!(LockEvent {
-            source_blockchain: "Solana".to_string(),
-            dest_blockchain: "Ethereum".to_string(), //dest_blockchain,
+            source_blockchain: source_chain,
+            destination_blockchain: destination_chain, //dest_blockchain,
             sender: ctx.accounts.from.key(),
             amount: token_amount,
-            asset: "SOL".to_string(),
+            asset: token_locked,
         });
 
         return Ok(());
@@ -102,7 +108,7 @@ pub struct TransferNative<'info> {
 #[event]
 pub struct LockEvent {
     pub source_blockchain: String,
-    pub dest_blockchain: String,
+    pub destination_blockchain: String,
     #[index]
     pub sender: Pubkey,
     pub amount: u64,

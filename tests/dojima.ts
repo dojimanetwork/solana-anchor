@@ -41,7 +41,7 @@ describe("dojima", () => {
     const program = new Program(IDL, programID, provider);
 
     // Add your test here.
-    const tx = await program.rpc.transferNativeTokens(new anchor.BN(1000), {
+    const tx = await program.rpc.transferNativeTokens(new anchor.BN(1000),"Solana", "Ethereum","Solana", {
       accounts: {
         from: fromWallet.publicKey,
         to: toWallet.publicKey,
@@ -99,7 +99,7 @@ describe("dojima", () => {
     console.log("Token mint address: ", mint.toBase58());
     console.log("Token address: ", fromTokenAccount.address.toBase58());
 
-    const tx = await program.rpc.transferNonNativeTokens(new anchor.BN(10000000), {
+    const tx = await program.rpc.transferNonNativeTokens(new anchor.BN(10000000),"Solana", "Ethereum", "New Mint", {
       accounts: {
         from: fromWallet.publicKey,
         fromTokenAccount: fromTokenAccount.address,
