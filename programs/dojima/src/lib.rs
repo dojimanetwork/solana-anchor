@@ -97,3 +97,14 @@ pub struct LockEvent {
     pub amount: u64,
     pub asset: String,
 }
+
+#[event]
+pub struct PoolLockEvent{
+    pub source_blockchain: String,
+    pub token_a: String,
+    pub token_b: String,
+    #[index]
+    pub sender: Pubkey,
+    pub amount_token_a: u64,
+    pub amount_token_b: u64,
+}
