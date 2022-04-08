@@ -6,3 +6,10 @@ target
 node_modules
 migrations/*
 app
+yarn.lock
+tsconfig.json
+package.json
+package-lock.json
+Cargo.toml
+Cargo.lock
+
