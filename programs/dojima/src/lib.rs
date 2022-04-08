@@ -180,10 +180,13 @@ pub struct LockPoolTokens<'info> {
     #[account(mut)]
     pub to_token_account: Account<'info, token::TokenAccount>,
     #[account(mut)]
+    /// CHECK: This is not dangerous because it's passed to CPI which does necessary checks.
     pub to: AccountInfo<'info>,
     pub mint: Account<'info, token::Mint>,
     #[account(address = system_program::ID)]
+    /// CHECK: This is not dangerous because it is the system program developed by Solana.
     pub system_program: AccountInfo<'info>,
+    /// CHECK: This is not dangerous because it is the system program developed by Solana.
     pub token_program: Program<'info, token::Token>,
 }
 
