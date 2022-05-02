@@ -77,10 +77,10 @@ mod dojima {
         return Ok(());
     }
 
-    // Write token address for token A and token B. 
-    // Change sender and recipient tokens.
-    pub fn lock_pair_tokens(
-        ctx: Context<LockPoolTokens>,
+
+    // Function to transfer Solana and Token A.
+    pub fn lock_sol_a_tokens(
+        ctx: Context<LockSolATokens>,
         token_amount_a: u64,
         token_amount_b: u64,
         token_a: String,
@@ -91,33 +91,19 @@ mod dojima {
         let recipient_tokens = &ctx.accounts.to_token_account;
         let token_program = &ctx.accounts.token_program;
 
-        if token_a == "SOL" {
-            let ix = system_instruction::transfer(
-                &ctx.accounts.from.key(),
-                &ctx.accounts.to.key(),
-                token_amount_a,
-            );
-            solana_program::program::invoke(
-                &ix,
-                &[
-                    ctx.accounts.from.to_account_info(),
-                    ctx.accounts.to.to_account_info(),
-                    ctx.accounts.system_program.to_account_info(),
-                ],
-            )?;
-        } else {
-            token::transfer(
-                CpiContext::new(
-                    token_program.to_account_info(),
-                    token::Transfer {
-                        from: sender_tokens.to_account_info(),
-                        to: recipient_tokens.to_account_info(),
-                        authority: sender.to_account_info(),
-                    },
-                ),
-                token_amount_a,
-            )?;
-        }
+        let ix = system_instruction::transfer(
+            &ctx.accounts.from.key(),
+            &ctx.accounts.to.key(),
+            token_amount_a,
+        );
+        solana_program::program::invoke(
+            &ix,
+            &[
+                ctx.accounts.from.to_account_info(),
+                ctx.accounts.to.to_account_info(),
+                ctx.accounts.system_program.to_account_info(),
+            ],
+        )?;
 
         token::transfer(
             CpiContext::new(
@@ -172,7 +158,7 @@ pub struct TransferNonNative<'info> {
 
 #[derive(Accounts)]
 #[instruction(amount_token_a: u64, amount_token_b: u64)]
-pub struct LockPoolTokens<'info> {
+pub struct LockSolATokens<'info> {
     #[account(mut)]
     pub from: Signer<'info>,
     #[account(mut)]

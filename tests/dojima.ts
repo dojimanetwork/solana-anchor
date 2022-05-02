@@ -15,13 +15,17 @@ const payer = fromWallet;
 const mintAuthority = fromWallet;
 const freezeAuthority = fromWallet;
 
+let mintAddress: anchor.web3.PublicKey;
+let fromTokenAcc: splToken.Account;
+let toTokenAcc: splToken.Account;
+
 const opts = {
   preflightCommitment: "processed"
 }
 
 async function getProvider() {
   const connection = new web3.Connection(endpoint, "processed");
-  // @ts-ignore 
+  //@ts-ignore
   const provider = new Provider(connection, new Wallet(fromWallet), opts);
   return provider;
 }
@@ -36,12 +40,13 @@ describe("dojima", () => {
       2 * web3.LAMPORTS_PER_SOL, // 10000000 Lamports in 1 SOL
     );
     await connection.confirmTransaction(airdropSignature);
+    console.log(airdropSignature, " Hi");
 
     const provider = await getProvider()
     const program = new Program(IDL, programID, provider);
 
     // Add your test here.
-    const tx = await program.rpc.transferNativeTokens(new anchor.BN(1000),"Solana", "Ethereum","Solana", {
+    const tx = await program.rpc.transferNativeTokens(new anchor.BN(1000000), "Solana", "Ethereum", "Solana", {
       accounts: {
         from: fromWallet.publicKey,
         to: toWallet.publicKey,
@@ -50,7 +55,7 @@ describe("dojima", () => {
       signers: [fromWallet],
     });
 
-    // await connection.confirmTransaction(tx);
+    //await connection.confirmTransaction(tx);
     // console.log("Your transaction signature", tx);
     // const fromWalletBalance = await connection.getBalance(fromWallet.publicKey);
     // console.log(fromWalletBalance);
@@ -70,6 +75,7 @@ describe("dojima", () => {
       freezeAuthority.publicKey,
       6
     );
+    mintAddress = mint;
 
     //Create a token account for the payer wallet
     const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
@@ -78,6 +84,7 @@ describe("dojima", () => {
       mint,
       payer.publicKey
     )
+    fromTokenAcc = fromTokenAccount;
 
     const toTokenAccount = await getOrCreateAssociatedTokenAccount(
       connection,
@@ -85,6 +92,7 @@ describe("dojima", () => {
       mint,
       toWallet.publicKey
     )
+    toTokenAcc = toTokenAccount;
 
     //Mint the supply to the payer's token address 
     await mintTo(
@@ -99,7 +107,7 @@ describe("dojima", () => {
     console.log("Token mint address: ", mint.toBase58());
     console.log("Token address: ", fromTokenAccount.address.toBase58());
 
-    const tx = await program.rpc.transferNonNativeTokens(new anchor.BN(10000000),"Solana", "Ethereum", "New Mint", {
+    const tx = await program.rpc.transferNonNativeTokens(new anchor.BN(10000000), "Solana", "Ethereum", "New Mint", {
       accounts: {
         from: fromWallet.publicKey,
         fromTokenAccount: fromTokenAccount.address,
@@ -112,15 +120,23 @@ describe("dojima", () => {
 
     // const fromTokenAccountInfo = await getAccount(
     //   connection,
-    //   fromTokenAccount.address
+    //   fromTokenAcc.address
     // )
     // console.log(fromTokenAccountInfo.amount);
 
     // const toTokenAccountInfo = await getAccount(
     //   connection,
-    //   toTokenAccount.address
+    //   toTokenAcc.address
     // )
     // console.log(toTokenAccountInfo.amount);
+
+    let balance = await connection.getBalance(fromWallet.publicKey);
+
+    console.log(balance);
   });
 
+  //Test to lock pool token
+  it("Pool token is locked!", async () => {
+    
+  });
 })
