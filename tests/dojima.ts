@@ -137,6 +137,25 @@ describe("dojima", () => {
 
   //Test to lock pool token
   it("Pool token is locked!", async () => {
-    
+
+    const provider = await getProvider()
+    const program = new Program(IDL, programID, provider);
+
+    const tx = await program.rpc.lockSolATokens(new anchor.BN(1000), new anchor.BN(10000), "SOL", "New Mint", {
+      accounts: {
+        from: fromWallet.publicKey,
+        fromTokenAccount: fromTokenAcc.address,
+        toTokenAccount: toTokenAcc.address,
+        to: toWallet.publicKey,
+        mint: mintAddress,
+        tokenProgram: splToken.TOKEN_PROGRAM_ID,
+        systemProgram: web3.SystemProgram.programId,
+      },
+      signers: [fromWallet],
+
+    })
+
+    await connection.confirmTransaction(tx);
+    console.log("Your transaction signature", tx);
   });
 })
