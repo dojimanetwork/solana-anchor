@@ -30,7 +30,7 @@ async function getProvider() {
   return provider;
 }
 
-describe("dojima", () => {
+describe("dojima smart contract test cases", () => {
 
   //Test to transfer Sol token
   it("Sol token is transferred!", async () => {
@@ -40,7 +40,6 @@ describe("dojima", () => {
       2 * web3.LAMPORTS_PER_SOL, // 10000000 Lamports in 1 SOL
     );
     await connection.confirmTransaction(airdropSignature);
-    console.log(airdropSignature, " Hi");
 
     const provider = await getProvider()
     const program = new Program(IDL, programID, provider);
@@ -104,8 +103,8 @@ describe("dojima", () => {
       100000000000
     )
 
-    console.log("Token mint address: ", mint.toBase58());
-    console.log("Token address: ", fromTokenAccount.address.toBase58());
+    // console.log("Token mint address: ", mint.toBase58());
+    // console.log("Token address: ", fromTokenAccount.address.toBase58());
 
     const tx = await program.rpc.transferNonNativeTokens(new anchor.BN(10000000), "Solana", "Ethereum", "New Mint", {
       accounts: {
@@ -118,24 +117,9 @@ describe("dojima", () => {
       signers: [fromWallet],
     });
 
-    // const fromTokenAccountInfo = await getAccount(
-    //   connection,
-    //   fromTokenAcc.address
-    // )
-    // console.log(fromTokenAccountInfo.amount);
-
-    // const toTokenAccountInfo = await getAccount(
-    //   connection,
-    //   toTokenAcc.address
-    // )
-    // console.log(toTokenAccountInfo.amount);
-
-    let balance = await connection.getBalance(fromWallet.publicKey);
-
-    console.log(balance);
   });
 
-  //Test to lock pool token
+  //Test to lock pool token with solana
   it("Pool token is locked!", async () => {
 
     const provider = await getProvider()
@@ -156,6 +140,32 @@ describe("dojima", () => {
     })
 
     await connection.confirmTransaction(tx);
-    console.log("Your transaction signature", tx);
+    // console.log("Your transaction signature", tx);
+  });
+
+  //Test to lock pool token with Token A & B.
+  it("Pool tokens A,B are locked!", async () => {
+
+    const provider = await getProvider()
+    const program = new Program(IDL, programID, provider);
+
+    const tx = await program.rpc.lockAbTokens(new anchor.BN(1000), new anchor.BN(10000), "New Mint A", "New Mint B", {
+      accounts: {
+        from: fromWallet.publicKey,
+        fromTokenAccountA: fromTokenAcc.address,
+        toTokenAccountA: toTokenAcc.address,
+        fromTokenAccountB: fromTokenAcc.address,
+        toTokenAccountB: toTokenAcc.address,
+        mintA: mintAddress,
+        mintB: mintAddress,
+        tokenProgram: splToken.TOKEN_PROGRAM_ID,
+        systemProgram: web3.SystemProgram.programId,
+      },
+      signers: [fromWallet],
+
+    })
+
+    // await connection.confirmTransaction(tx);
+    // console.log("Your transaction signature", tx);
   });
 })

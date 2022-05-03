@@ -145,6 +145,74 @@
           "type": "string"
         }
       ]
+    },
+    {
+      "name": "lockAbTokens",
+      "accounts": [
+        {
+          "name": "from",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "fromTokenAccountA",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "fromTokenAccountB",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "toTokenAccountA",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "toTokenAccountB",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mintA",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mintB",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "tokenAmountA",
+          "type": "u64"
+        },
+        {
+          "name": "tokenAmountB",
+          "type": "u64"
+        },
+        {
+          "name": "tokenA",
+          "type": "string"
+        },
+        {
+          "name": "tokenB",
+          "type": "string"
+        }
+      ]
     }
   ],
   "events": [

@@ -77,7 +77,6 @@ mod dojima {
         return Ok(());
     }
 
-
     // Function to transfer Solana and Token A.
     pub fn lock_sol_a_tokens(
         ctx: Context<LockSolATokens>,
@@ -111,6 +110,56 @@ mod dojima {
                 token::Transfer {
                     from: sender_tokens.to_account_info(),
                     to: recipient_tokens.to_account_info(),
+                    authority: sender.to_account_info(),
+                },
+            ),
+            token_amount_b,
+        )?;
+
+        emit!(PoolLockEvent {
+            token_a: token_a,
+            token_b: token_b,
+            sender: ctx.accounts.from.key(),
+            amount_token_a: token_amount_a,
+            amount_token_b: token_amount_b,
+        });
+
+        return Ok(());
+    }
+
+    // Function to transfer Token A and Token B.
+    pub fn lock_ab_tokens(
+        ctx: Context<LockABTokens>,
+        token_amount_a: u64,
+        token_amount_b: u64,
+        token_a: String,
+        token_b: String,
+    ) -> ProgramResult {
+        let sender = &ctx.accounts.from;
+        let sender_tokens_a = &ctx.accounts.from_token_account_a;
+        let recipient_tokens_a = &ctx.accounts.to_token_account_a;
+        let sender_tokens_b = &ctx.accounts.from_token_account_b;
+        let recipient_tokens_b = &ctx.accounts.to_token_account_b;
+        let token_program = &ctx.accounts.token_program;
+
+        token::transfer(
+            CpiContext::new(
+                token_program.to_account_info(),
+                token::Transfer {
+                    from: sender_tokens_a.to_account_info(),
+                    to: recipient_tokens_a.to_account_info(),
+                    authority: sender.to_account_info(),
+                },
+            ),
+            token_amount_a,
+        )?;
+
+        token::transfer(
+            CpiContext::new(
+                token_program.to_account_info(),
+                token::Transfer {
+                    from: sender_tokens_b.to_account_info(),
+                    to: recipient_tokens_b.to_account_info(),
                     authority: sender.to_account_info(),
                 },
             ),
@@ -169,6 +218,30 @@ pub struct LockSolATokens<'info> {
     /// CHECK: This is not dangerous because it's passed to CPI which does necessary checks.
     pub to: AccountInfo<'info>,
     pub mint: Account<'info, token::Mint>,
+    #[account(address = system_program::ID)]
+    /// CHECK: This is not dangerous because it is the system program developed by Solana.
+    pub system_program: AccountInfo<'info>,
+    /// CHECK: This is not dangerous because it is the system program developed by Solana.
+    pub token_program: Program<'info, token::Token>,
+}
+
+#[derive(Accounts)]
+#[instruction(amount_token_a: u64, amount_token_b: u64)]
+pub struct LockABTokens<'info> {
+    #[account(mut)]
+    pub from: Signer<'info>,
+    #[account(mut)]
+    pub from_token_account_a: Box<Account<'info, token::TokenAccount>>,
+    #[account(mut)]
+    pub from_token_account_b: Box<Account<'info, token::TokenAccount>>,
+    #[account(mut)]
+    pub to_token_account_a: Box<Account<'info, token::TokenAccount>>,
+    #[account(mut)]
+    pub to_token_account_b: Box<Account<'info, token::TokenAccount>>,
+    #[account(mut)]
+    pub mint_a: Account<'info, token::Mint>,
+    #[account(mut)]
+    pub mint_b: Account<'info, token::Mint>,
     #[account(address = system_program::ID)]
     /// CHECK: This is not dangerous because it is the system program developed by Solana.
     pub system_program: AccountInfo<'info>,
